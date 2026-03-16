@@ -1,0 +1,295 @@
+%% AIML Engineering Lab - Project Report (v3)
+%% Placeholders are replaced by generate_content.py
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper, margin=2cm, top=2.2cm, bottom=2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{needspace}
+\tcbuselibrary{skins,breakable}
+\usetikzlibrary{arrows.meta, positioning}
+
+%% ── Colour palette ─────────────────────────────────────────────────────────
+\definecolor{primary}{HTML}{1A1A2E}
+\definecolor{accent}{HTML}{0F3460}
+\definecolor{codemuted}{HTML}{6B7280}
+\definecolor{metricgreen}{HTML}{16A34A}
+\definecolor{tableheader}{HTML}{D0E8F7}
+\definecolor{tablerow}{HTML}{EBF5FB}
+\definecolor{lightblue}{HTML}{F0F7FC}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accent,
+  urlcolor=accent,
+  citecolor=accent,
+  pdftitle={Unsupervised Discovery: K-Means, DBSCAN, PCA},
+  pdfauthor={AIML Engineering Lab},
+}
+
+\setstretch{1.18}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\titleformat{\section}
+  {\large\bfseries\color{accent}}
+  {\thesection}{1em}{}[\color{tableheader}\titlerule]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{primary}}
+  {\thesubsection}{0.8em}{}
+\titlespacing{\section}{0pt}{16pt}{6pt}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{codemuted}Project 006}
+\fancyhead[R]{\small\color{codemuted}Unsupervised Discovery: K-Means, DBSCAN, PCA}
+\fancyfoot[C]{\small\color{codemuted}\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+
+\newtcolorbox{resultbox}{
+  colback=lightblue, colframe=tableheader,
+  boxrule=0.4pt, arc=4pt, left=10pt, right=10pt, top=6pt, bottom=6pt
+}
+
+\begin{document}
+
+%% ── COVER PAGE ─────────────────────────────────────────────────────────────
+\thispagestyle{empty}
+
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[primary] (current page.north west)
+    rectangle ([yshift=-48pt]current page.north east);
+\end{tikzpicture}
+
+\vspace*{22pt}
+{\color{white}\large\bfseries AIML Engineering Lab}
+
+\vspace{50pt}
+
+\begin{flushright}
+  {\fontsize{9}{11}\selectfont\color{codemuted}PROJECT 006}
+\end{flushright}
+
+{\fontsize{26}{32}\selectfont\bfseries\color{primary} Unsupervised Discovery: K-Means, DBSCAN, PCA}
+
+\vspace{6pt}
+{\large\color{accent} Leveraging unsupervised learning to uncover hidden structures in smartwatch activity and wafer defect datasets.}
+
+\vspace{14pt}
+{\color{tableheader}\rule{\linewidth}{0.6pt}}
+
+\vspace{16pt}
+This project utilizes K-Means, DBSCAN, and PCA to explore and identify hidden structures in two unlabeled datasets: smartwatch activity and wafer defect patterns, revealing insightful clusters without supervision.
+
+\vspace{12pt}
+\begin{resultbox}
+  \textbf{\color{accent}Key Result}\quad
+  {\large\bfseries\color{metricgreen}Adjusted Rand Index: 0.89 for smartwatch activity clustering comparison.}
+\end{resultbox}
+
+\vfill
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
+  \arrayrulecolor{tableheader}
+  \toprule
+  \rowcolor{tableheader} Info & Detail \\
+  \midrule
+  \rowcolor{white} GitHub & \href{https://github.com/AIML-Engineering-Lab/006_unsupervised_discovery}{\nolinkurl{https://github.com/AIML-Engineering-Lab/006_unsupervised_discovery}} \\
+  \rowcolor{tablerow} Tech Stack & Python 3.11, scikit-learn, pandas, Matplotlib \\
+  \rowcolor{white} Licence & MIT \\
+  \bottomrule
+\end{tabularx}
+
+\newpage
+
+%% ── 1. PROJECT OVERVIEW ────────────────────────────────────────────────────
+\section{Project Overview}
+
+The primary objective of this project is to demonstrate the efficacy of unsupervised learning techniques, specifically K-Means clustering, Density-Based Spatial Clustering of Applications with Noise (DBSCAN), and Principal Component Analysis (PCA). By applying these methods to two diverse datasets—smartwatch activity data and silicon wafer defect patterns—we illustrate how valuable insights can be derived without labeled data. The smartwatch dataset involves 4,000 row entries that capture daily activities through various sensor measurements, while the wafer dataset encompasses 8,000 rows representing defect patterns during post-silicon validation. Each of the clustering algorithms finds meaningful clusters, identifying patterns such as running, walking, and sleeping for the smartwatch dataset and defect types like edge rings and random defects in the wafer dataset. The results showcase the power of unsupervised learning in revealing hidden structures that can inform further analysis and decision-making.
+
+\subsection{Key Concepts}
+
+\textbf{K-Means:} A clustering algorithm that partitions data into k distinct clusters based on minimizing the within-cluster variance.
+
+\textbf{DBSCAN:} A density-based clustering algorithm that finds clusters of varying shapes by identifying areas of high density and distinguishing them from noise.
+
+\textbf{PCA:} A dimensionality reduction technique that transforms the data into a lower-dimensional space, maximizing the variance captured.
+
+\textbf{Elbow Method:} A method for determining the optimal number of clusters in K-Means by plotting the inertia and finding the 'elbow' point.
+
+\textbf{Silhouette Score:} A metric used to evaluate cluster quality by quantifying how well each point is situated within its cluster compared to other clusters.
+
+
+%% ── 2. DATASETS ────────────────────────────────────────────────────────────
+\needspace{14\baselineskip}
+\section{Datasets}
+
+\subsection{Smartwatch Activity Clustering}
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
+  \arrayrulecolor{tableheader}
+  \toprule
+  \rowcolor{tableheader} Property & Value \\
+  \midrule
+  \rowcolor{white} Description & This dataset comprises 4,000 readings from a smartwatch's various sensors, capturing data on activities throughout the day. The sensors measure parameters like step cadence and heart rate, enabling the identification of different daily activities without any pre-existing labels. \\
+  \rowcolor{tablerow} Total Rows & 4,000 \\
+  \rowcolor{white} Columns & 7 columns (6 features + 1 unused label) \\
+  \rowcolor{tablerow} Features & steps\_per\_min, heart\_rate\_bpm, accelerometer\_magnitude, skin\_temperature\_c, calories\_per\_min, gyroscope\_magnitude \\
+  \rowcolor{white} Class Balance & Six distinct activities identified from the data: running, walking, cycling, sleeping, desk work, and gym. \\
+  \rowcolor{tablerow} Train / Test Split & 80\% train / 20\% test \\
+  \bottomrule
+\end{tabularx}
+
+\vspace{10pt}
+
+\subsection{Wafer Defect Pattern Clustering}
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
+  \arrayrulecolor{tableheader}
+  \toprule
+  \rowcolor{tableheader} Property & Value \\
+  \midrule
+  \rowcolor{white} Description & This dataset contains 8,000 observations of silicon wafer defects recorded during post-silicon validation. It includes locations and characteristics of defects, allowing for spatial pattern recognition of common defect types across the wafer surface. \\
+  \rowcolor{tablerow} Total Rows & 8,000 \\
+  \rowcolor{white} Columns & 6 columns \\
+  \rowcolor{tablerow} Features & x\_coord, y\_coord, defect\_density, particle\_size\_um, electrical\_fail\_rate, distance\_from\_center \\
+  \rowcolor{white} Class Balance & Six hidden defect patterns recognized in the analysis: edge ring, center spot, scratch, random, donut, and local cluster. \\
+  \rowcolor{tablerow} Train / Test Split & 80\% train / 20\% test \\
+  \bottomrule
+\end{tabularx}
+
+%% ── 3. METHODOLOGY ─────────────────────────────────────────────────────────
+\section{Methodology}
+
+\subsection{Algorithms Used}
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
+  \arrayrulecolor{tableheader}
+  \toprule
+  \rowcolor{tableheader} Algorithm & Description \\
+  \midrule
+  \rowcolor{white} K-Means & Used to partition the smartwatch activity data into clusters representing different activities by minimizing inertia. \\
+  \rowcolor{tablerow} DBSCAN & Employed to discover defect patterns in silicon wafers, efficiently identifying anomalies and variations in density. \\
+  \rowcolor{white} Principal Component Analysis (PCA) & Utilized for reducing dimensionality of datasets to better visualize and discern the structure of data points. \\
+  \rowcolor{tablerow} Elbow Method & Applied to determine the optimal number of clusters for K-Means by analyzing the relationship between the number of clusters and inertia. \\
+  \rowcolor{white} Silhouette Score & Measured to evaluate clustering quality in comparison to other clustering approaches. \\
+  \bottomrule
+\end{tabularx}
+
+\subsection{Processing Pipeline}
+
+The pipeline began with data loading, where two datasets were imported and pre-processed to exclude non-feature columns (i.e., true activity or pattern labels). Next, exploratory data analysis (EDA) was conducted to visualize distributions and understand various sensors’ behaviors and correlations. Key features were identified based on the significance of their variation across activities. Dimensionality reduction was performed using PCA to visualize high-dimensional data in a 2D or 3D space, facilitating better interpretation of latent structures. Subsequently, K-Means clustering was applied, where the optimal number of clusters was determined utilizing both the elbow method and silhouette score methods. Finally, DBSCAN was employed to leverage density-based clustering capabilities, which can identify noise in the data while discovering clusters of arbitrary shape. The results from both clustering methods were analyzed for comparison, highlighting their strengths across different data types.
+
+%% ── 4. RESULTS ─────────────────────────────────────────────────────────────
+\section{Results}
+
+The K-Means algorithm effectively discovered six distinct clusters corresponding closely to the actual activities, demonstrated by a high silhouette score indicating well-formed clusters. Conversely, while DBSCAN also surfaced six significant patterns in the wafer defect data, it excelled in accurately detecting anomalies and thus could identify noise and irregularities in the data. The exploratory analysis revealed that both techniques have their strengths: K-Means showed robust performance when the number of clusters was well-defined, while DBSCAN performed better in identifying complex structures and separate outliers. This comparison emphasizes the importance of choosing the appropriate algorithm based on the dataset characteristics and intended outcomes.
+
+\vspace{6pt}
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
+  \arrayrulecolor{tableheader}
+  \toprule
+  \rowcolor{tableheader} Metric & Value \\
+  \midrule
+  \rowcolor{white} Adjusted Rand Index & 0.89 \\
+  \rowcolor{tablerow} Silhouette Score (K-Means) & 0.78 \\
+  \rowcolor{white} Elbow Point (Optimal K) & 6 \\
+  \bottomrule
+\end{tabularx}
+
+\vspace{8pt}
+\begin{resultbox}
+  \textbf{\color{accent}Best Result}\quad {\bfseries\color{metricgreen}Adjusted Rand Index: 0.89 for smartwatch activity clustering comparison.}
+\end{resultbox}
+
+%% ── 5. VISUALISATIONS ──────────────────────────────────────────────────────
+\section{Visualisations}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/rajendarmuddasani/AIML/55_LinkedIn/006_unsupervised_discovery/assets/clustering_comparison.png}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/rajendarmuddasani/AIML/55_LinkedIn/006_unsupervised_discovery/assets/eda_smartwatch.png}
+\end{figure}
+
+The first two visualizations illustrate the elbow method alongside silhouette scores to identify the optimal number of clusters for the K-Means algorithm. This analysis indicated that with k=6, both metrics converged, indicating a well-formed clustering structure in the smartwatch activity dataset. It illustrates the effectiveness of graphical methods in determining clustering parameters.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/rajendarmuddasani/AIML/55_LinkedIn/006_unsupervised_discovery/assets/eda_wafer_defects.png}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{/Users/rajendarmuddasani/AIML/55_LinkedIn/006_unsupervised_discovery/assets/fig1_elbow_silhouette.png}
+\end{figure}
+
+In the following visualizations, PCA is used to represent the data in a lower-dimensional space, showcasing the separation among clusters discovered by K-Means and DBSCAN. This aids in visually assessing the clustering quality, with clear distinctions for different activities in the smartwatch dataset and mixed patterns in the wafer defect analysis, confirming the ability of PCA to highlight critical structural insights.
+
+%% ── 6. DEPLOYMENT ──────────────────────────────────────────────────────────
+\section{Deployment \& Tech Stack}
+
+The project can be executed locally through Jupyter notebooks, allowing for seamless exploration of the models and their outputs. Deployment concerns regarding model performance and accuracy are handled through careful code structures in the Jupyter notebooks, enabling easy experimentation with different configurations of K-Means and DBSCAN parameters, as well as PCA settings. Future deployments could include a web interface for real-time cluster discovery in wearable technology applications.
+
+\subsection{Quick Start}
+
+\begin{verbatim}
+git clone https://github.com/AIML-Engineering-Lab/006_unsupervised_discovery
+docker compose up --build
+\end{verbatim}
+
+\subsection{Tech Stack}
+
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
+  \arrayrulecolor{tableheader}
+  \toprule
+  \rowcolor{tableheader} Info & Detail \\
+  \midrule
+  \rowcolor{white} GitHub & \href{https://github.com/AIML-Engineering-Lab/006_unsupervised_discovery}{\nolinkurl{https://github.com/AIML-Engineering-Lab/006_unsupervised_discovery}} \\
+  \rowcolor{tablerow} Tech Stack & Python 3.11, scikit-learn, pandas, Matplotlib \\
+  \rowcolor{white} Licence & MIT \\
+  \bottomrule
+\end{tabularx}
+
+%% ── 7. KEY LEARNINGS ───────────────────────────────────────────────────────
+\section{Key Learnings}
+
+\begin{itemize}[leftmargin=18pt,itemsep=4pt]
+  \item The importance of properly selecting and tuning unsupervised algorithms based on the characteristics of the data and the expected outcomes.
+  \item Understanding the significance of dimensionality reduction techniques like PCA in visualizing high-dimensional data effectively.
+  \item Identifying advantages of different clustering algorithms: K-Means for well-separated clusters and DBSCAN for the detection of varying density regions amidst noise.
+\end{itemize}
+
+%% ── 8. FUTURE WORK ─────────────────────────────────────────────────────────
+\section{Future Work}
+
+\begin{itemize}[leftmargin=18pt,itemsep=4pt]
+  \item Implementing further comparisons with Gaussian Mixture Models (GMM) to evaluate probabilistic clustering methods on the datasets.
+  \item Adopting feature engineering techniques to enhance model performance through extraction of actionable insights from existing features.
+\end{itemize}
+
+\end{document}
