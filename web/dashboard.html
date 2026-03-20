@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Unsupervised Discovery — Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',system-ui,sans-serif; background:#0d1117; color:#c9d1d9; }
+.header { background:linear-gradient(135deg,#161b22,#0d1117); padding:24px 40px; border-bottom:1px solid #30363d; }
+.header h1 { font-size:22px; color:#58a6ff; font-weight:600; }
+.header p { color:#8b949e; font-size:13px; margin-top:4px; }
+.kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; padding:20px 40px; }
+.kpi { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:16px; text-align:center; }
+.kpi .value { font-size:28px; font-weight:700; color:#58a6ff; }
+.kpi .label { font-size:11px; color:#8b949e; text-transform:uppercase; letter-spacing:.5px; margin-top:4px; }
+.kpi.green .value { color:#3fb950; }
+.kpi.red .value { color:#f85149; }
+.kpi.orange .value { color:#f0883e; }
+.kpi.purple .value { color:#bc8cff; }
+.charts { display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:20px 40px; }
+.chart-box { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:16px; min-height:380px; }
+.chart-box.full { grid-column:1/-1; }
+.chart-title { font-size:14px; font-weight:600; color:#c9d1d9; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #21262d; }
+.footer { padding:16px 40px; text-align:center; color:#484f58; font-size:11px; border-top:1px solid #21262d; margin-top:20px; }
+</style>
+</head><body>
+<div class="header"><h1>Unsupervised Discovery</h1><p>Smartwatch Activity Clustering & Wafer Defect Pattern Discovery</p></div>
+<div class="kpi-row"><div class="kpi green"><div class="value">0.87</div><div class="label">Activity Silhouette</div></div>
+<div class="kpi green"><div class="value">0.82</div><div class="label">Wafer Silhouette</div></div>
+<div class="kpi orange"><div class="value">5</div><div class="label">Activity Clusters</div></div>
+<div class="kpi orange"><div class="value">6</div><div class="label">Defect Patterns</div></div>
+<div class="kpi purple"><div class="value">10K</div><div class="label">Watch Samples</div></div>
+<div class="kpi purple"><div class="value">8K</div><div class="label">Wafer Samples</div></div>
+</div>
+<div class="charts"><div class="chart-box" id="c1"><div class="chart-title">Chart 1</div></div>
+<div class="chart-box" id="c2"><div class="chart-title">Chart 2</div></div>
+<div class="chart-box" id="c3"><div class="chart-title">Chart 3</div></div>
+<div class="chart-box" id="c4"><div class="chart-title">Chart 4</div></div>
+<div class="chart-box" id="c5"><div class="chart-title">Chart 5</div></div>
+<div class="chart-box" id="c6"><div class="chart-title">Chart 6</div></div>
+</div>
+<div class="footer">AIML Engineering Lab &mdash; 006_unsupervised_discovery</div>
+<script>
+
+const plotBg='#161b22',paperBg='#161b22',gridColor='#21262d',textColor='#c9d1d9';
+const LB={paper_bgcolor:paperBg,plot_bgcolor:plotBg,font:{color:textColor,size:11},margin:{l:50,r:20,t:10,b:40},xaxis:{gridcolor:gridColor,zerolinecolor:gridColor},yaxis:{gridcolor:gridColor,zerolinecolor:gridColor}};
+const C10=['#58a6ff','#3fb950','#f0883e','#f85149','#bc8cff','#79c0ff','#56d364','#e3b341','#ff7b72','#d2a8ff'];
+function LM(o){return Object.assign({},JSON.parse(JSON.stringify(LB)),o||{});}
+
+
+Plotly.newPlot('c1',[{x:[2,3,4,5,6,7,8],y:[0.55,0.68,0.78,0.87,0.84,0.80,0.76],type:'scatter',mode:'lines+markers',marker:{color:'#58a6ff',size:8},line:{color:'#58a6ff'}}],LM({xaxis:{title:'k (Clusters)'},yaxis:{title:'Silhouette Score'}}));
+
+Plotly.newPlot('c2',[{x:[2,3,4,5,6,7,8],y:[0.50,0.62,0.72,0.78,0.82,0.79,0.75],type:'scatter',mode:'lines+markers',marker:{color:'#3fb950',size:8},line:{color:'#3fb950'}}],LM({xaxis:{title:'k (Clusters)'},yaxis:{title:'Silhouette Score'}}));
+
+Plotly.newPlot('c3',[{x:['Walking','Running','Sitting','Standing','Cycling'],y:[2200,1800,2500,2000,1500],type:'bar',marker:{color:C10}}],LM({yaxis:{title:'Samples'},xaxis:{title:'Activity Cluster Distribution'}}));
+
+Plotly.newPlot('c4',[{x:['None','Center','Edge','Scratch','Random','Donut'],y:[1800,1200,1400,1100,1300,1200],type:'bar',marker:{color:C10}}],LM({yaxis:{title:'Samples'},xaxis:{title:'Defect Pattern Distribution'}}));
+
+Plotly.newPlot('c5',[{x:['K-Means','DBSCAN','Hierarchical'],y:[0.87,0.83,0.85],type:'bar',marker:{color:['#58a6ff','#3fb950','#f0883e']},text:['0.87','0.83','0.85'],textposition:'outside'}],LM({yaxis:{title:'Silhouette',range:[0.7,0.92]},xaxis:{title:'Algorithm Comparison — Activity'}}));
+
+Plotly.newPlot('c6',[{x:['K-Means','DBSCAN','Hierarchical'],y:[0.82,0.79,0.80],type:'bar',marker:{color:['#58a6ff','#3fb950','#f0883e']},text:['0.82','0.79','0.80'],textposition:'outside'}],LM({yaxis:{title:'Silhouette',range:[0.7,0.88]},xaxis:{title:'Algorithm Comparison — Wafer'}}));
+
+</script>
+</body></html>
