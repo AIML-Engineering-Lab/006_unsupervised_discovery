@@ -1,12 +1,10 @@
-# Post 006 — Unsupervised Discovery: K-Means, DBSCAN, PCA
-
-**AI Engineering Lab Series** | Era 1: Classic Machine Learning
+# Unsupervised Discovery: K-Means, DBSCAN & PCA
 
 ---
 
 ## Overview
 
-This project demonstrates the three foundational unsupervised learning techniques — **K-Means**, **DBSCAN**, and **PCA** — applied to two real-world discovery problems. The key insight: when you have no labels, unsupervised learning finds hidden structure in your data.
+This project demonstrates **K-Means Clustering**, **DBSCAN**, and **PCA Dimensionality Reduction** applied to two real-world unsupervised learning problems. The key insight: when you have no labels, unsupervised learning finds hidden structure in your data.
 
 | Concept | Description |
 |---|---|
@@ -35,10 +33,10 @@ Discovers daily activities from wearable sensor data — no labels provided.
 | `gyroscope_magnitude` | Rotational motion — high for running, near zero for sleeping |
 | `true_activity` | Ground truth label (kept for evaluation only, not used in clustering) |
 
-- **Rows:** 4,000 | **Hidden clusters:** 6 (Running, Walking, Cycling, Sleeping, Desk Work, Gym)
+- **Rows:** 4,000 | **Hidden clusters:** 4 (Running, Gym, Cycling, Sedentary)
 
-### Dataset B: Wafer Defect Pattern Clustering (Post-Silicon Validation)
-Discovers spatial defect patterns on silicon wafers — no labels provided.
+### Dataset B: Wafer Defect Pattern Discovery
+Discovers spatial defect patterns on semiconductor wafers — no labels provided.
 
 | Feature | Description |
 |---|---|
@@ -50,46 +48,74 @@ Discovers spatial defect patterns on silicon wafers — no labels provided.
 | `distance_from_center` | Distance from wafer center (0-1) |
 | `true_pattern` | Ground truth pattern (for evaluation only) |
 
-- **Rows:** 8,000 | **Hidden patterns:** 6 (Edge Ring, Center Spot, Scratch, Random, Donut, Local Cluster)
+- **Rows:** 8,000 | **Hidden patterns:** 5 (Random, Edge Ring, Center, Scratch, None)
 
 ---
 
-## Project Structure
+## Repository Structure
 
 ```
 006_unsupervised_discovery/
-├── data/
-│   ├── smartwatch_activity.csv
-│   └── wafer_defect_patterns.csv
-├── notebooks/
-│   ├── 01_unsupervised_smartwatch.ipynb
-│   └── 02_unsupervised_wafer.ipynb
-├── src/
-│   ├── data_generator.py
-│   └── generate_visuals.py
 ├── assets/
-│   ├── fig1_elbow_silhouette.png
-│   ├── fig2_kmeans_vs_true.png
-│   ├── fig3_pca_analysis.png
-│   ├── fig4_dbscan_wafer.png
-│   └── fig5_kmeans_vs_dbscan.png
-├── PRD.md
-├── requirements.txt
+│   ├── proj1_smartwatch_eda.png                   # Smartwatch: feature distributions + correlations
+│   ├── proj1_smartwatch_pca_analysis.png          # Smartwatch: PCA projection + variance
+│   ├── proj1_smartwatch_pca_analysis_fig.png      # Smartwatch: extended PCA with component loadings
+│   ├── proj1_smartwatch_kmeans_k_selection.png    # Smartwatch: k selection (inertia + silhouette)
+│   ├── proj1_smartwatch_elbow_silhouette.png      # Smartwatch: elbow method + silhouette analysis
+│   ├── proj1_smartwatch_kmeans_vs_true.png        # Smartwatch: K-Means clusters vs true labels
+│   ├── proj1_smartwatch_clustering_comparison.png # Smartwatch: multi-algorithm comparison
+│   ├── proj1_smartwatch_3d_pca_clusters.png       # Smartwatch: 3D PCA projection
+│   ├── proj1_smartwatch_model_heatmap.png         # Smartwatch: model performance heatmap
+│   ├── proj1_smartwatch_flowchart.png             # Smartwatch: AI-generated pipeline flowchart
+│   ├── proj2_wafer_eda.png                        # Wafer: feature distributions + spatial scatter
+│   ├── proj2_wafer_pca.png                        # Wafer: PCA projection by true pattern
+│   ├── proj2_wafer_clustering_comparison.png      # Wafer: multi-algorithm comparison
+│   ├── proj2_wafer_dbscan.png                     # Wafer: DBSCAN density-based clustering
+│   ├── proj2_wafer_kmeans_vs_dbscan.png           # Wafer: K-Means vs DBSCAN comparison
+│   ├── proj2_wafer_3d_defect_map.png              # Wafer: 3D defect spatial map
+│   ├── proj2_wafer_3d_dbscan_landscape.png        # Wafer: 3D DBSCAN landscape
+│   └── proj2_wafer_flowchart.png                  # Wafer: AI-generated pipeline flowchart
+├── data/
+│   ├── smartwatch_activity.csv                    # 4,000 smartwatch records (6 features + label)
+│   └── wafer_defect_patterns.csv                  # 8,000 wafer inspections (6 features + label)
+├── deploy/
+│   ├── Dockerfile                                 # Container image for FastAPI server
+│   └── docker-compose.yml                         # Single-command deployment
+├── docs/
+│   ├── Unsupervised_Discovery_Report.html         # Full report with embedded visualizations
+│   └── Unsupervised_Discovery_Report.pdf          # Print-ready A4 report
+├── models/
+│   ├── kmeans_smartwatch.pkl                      # Trained KMeans pipeline (smartwatch k=4)
+│   └── kmeans_wafer.pkl                           # Trained KMeans pipeline (wafer k=5)
+├── notebooks/
+│   ├── 01_unsupervised_smartwatch.ipynb           # Smartwatch EDA, clustering, PCA analysis
+│   └── 02_unsupervised_wafer_defects.ipynb        # Wafer EDA, DBSCAN, K-Means comparison
+├── src/
+│   ├── train.py                                   # Train both KMeans models (DATASETS dict)
+│   ├── predict.py                                 # Inference: load model, predict on DataFrame
+│   ├── api.py                                     # FastAPI endpoint (/health, /info, /predict)
+│   └── data_generator.py                          # Generate synthetic datasets
+├── tests/
+│   └── test_model.py                              # 4 tests: existence + prediction per model
 ├── .gitignore
-└── LICENSE
+├── LICENSE
+├── README.md
+└── requirements.txt
 ```
 
 ---
 
-## Key Visualizations
+## Tech Stack
 
-| Figure | Description |
-|---|---|
-| `fig1` | Elbow method + Silhouette score side-by-side — finding optimal k=6 |
-| `fig2` | K-Means discovered clusters vs true activity labels (2D PCA projection) |
-| `fig3` | PCA explained variance bar chart + 3D projection of all 6 activities |
-| `fig4` | DBSCAN discovering wafer defect patterns vs true patterns (spatial map) |
-| `fig5` | K-Means vs DBSCAN on blobs/moons/circles — when to use which algorithm |
+| Tool | Version | Purpose |
+|---|---|---|
+| Python | 3.11+ | Core runtime |
+| scikit-learn | ≥ 1.3 | KMeans, DBSCAN, PCA, StandardScaler, silhouette_score |
+| pandas | ≥ 2.0 | Data manipulation |
+| numpy | ≥ 1.24 | Numerical operations |
+| matplotlib / seaborn | ≥ 3.7 / 0.12 | Visualizations |
+| FastAPI | latest | REST API serving |
+| joblib | built-in | Model serialization |
 
 ---
 
@@ -99,10 +125,16 @@ Discovers spatial defect patterns on silicon wafers — no labels provided.
 git clone https://github.com/AIML-Engineering-Lab/006_unsupervised_discovery.git
 cd 006_unsupervised_discovery
 pip install -r requirements.txt
-python src/data_generator.py
+
+# Train both models
+python src/train.py
+
+# Run inference
+python src/predict.py
+
+# Run tests
+python tests/test_model.py
+
+# Explore notebooks
 jupyter notebook notebooks/
 ```
-
----
-
-*Part of the [AI Engineering Lab](https://github.com/AIML-Engineering-Lab) series.*

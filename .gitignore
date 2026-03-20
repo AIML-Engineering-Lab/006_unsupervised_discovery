@@ -32,12 +32,6 @@ data/raw/
 Thumbs.db
 
 # Model artifacts
-*.pkl
-*.joblib
-*.h5
-*.pt
-*.pth
-models/
 
 # Logs
 *.log
