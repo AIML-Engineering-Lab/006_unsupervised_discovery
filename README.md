@@ -138,3 +138,27 @@ python tests/test_model.py
 # Explore notebooks
 jupyter notebook notebooks/
 ```
+
+---
+
+## Architecture
+
+```mermaid
+graph LR
+    A[CSV Data] --> B[StandardScaler]
+    B --> C[KMeans]
+    B --> D[DBSCAN]
+    B --> E[Hierarchical]
+    C --> F[Silhouette Comparison]
+    D --> F
+    E --> F
+    F --> G[Best Clustering Export]
+    B --> H[PCA / t-SNE Visualization]
+    H --> I[Cluster Plots]
+```
+
+---
+
+## License
+
+MIT
